@@ -9,9 +9,8 @@ let createPins = (spots) => {
     
     for (let i of spots) { 
         let position = i.spcoordinates;
-        console.log(position);
-        //let marker = L.marker([])
-        //document.getElementById['map']
+        let marker = L.marker([])
+        document.getElementById['map']
     }
 }
 
@@ -24,10 +23,9 @@ let fetchPins = () => {
         )
     )
 }
- 
 
 window.addEventListener('DOMContentLoaded', (event) => { 
-
+    
     fetchPins();
 
 });
