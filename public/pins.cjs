@@ -1,22 +1,33 @@
 /**
- * Used by 'map_interactive' view, this script creates the pins
- * A fetch request is make through '/pins' which is routed to call the 'getSpots' function on 'pinsController'
- * The 'getSpots' function then makes a request on the database through the model 
- * The 'createPins' function sets a pin on each of the charger spot locations
+ * Uses fetch-api to get current position on map and create tile
  */
+let fetchPosition = () => { 
+    fetch('/position')
+    .then( 
+        (response) => response.json()
+        .then( 
+            (json) => makeMap(json)
+        )
+    )
+}
 
-let makeMap = () => { 
+/**
+ * Creates map tile on current position
+ */
+let makeMap = (position) => { 
 
     map = L.map(document.querySelector('#map'), { 
-        center: [38.246330, 21.734985], 
+        center: [position[0], position[1]], 
         zoom: 13
     });
 
-    var tiles = L.esri.basemapLayer("Streets").addTo(map);
-    //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
 
 }
 
+/**
+ * Positions charging spots on map placing a pin on each of them
+ */
 let createPins = (spots) => { 
 
     for (let i of spots) { 
@@ -27,6 +38,9 @@ let createPins = (spots) => {
     }
 }
 
+/**
+ * Uses fetch-api to get charging spot locations from database and calls createPins to position them on map
+ */
 let fetchPins = () => {
     fetch('/pins')
     .then(
@@ -40,7 +54,7 @@ let fetchPins = () => {
 window.addEventListener('DOMContentLoaded', (event) => { 
     
     let map;
-    makeMap();
+    fetchPosition();
     fetchPins();
 
 });
