@@ -7,47 +7,7 @@ const travelTimeClient = new traveltimeApi.TravelTimeClient({
   applicationId: process.env.APPLICATION_ID,
 });
 
-
 let mapPosition = [38.246330, 21.734985];
-
-let userPosition = [38.246330, 21.734985];
-
-/**
- * Watches user position in real time as they move
- * TODO: how does map follow user around? 
- */
-let followUserPosition = (req, res, next) => { 
-
-    if(navigator.geolocation) { 
-        navigator.geolocation.watchPosition(
-            data => {
-                userPosition[0] = data.coords[0]; 
-                userPosition[1] = data.coords[1];
-                next();
-            }
-        );
-    }
-
-}
-
-/**
- * Only gets current user position
- */
-let getUserPosition = (req, res, next) => { 
-    
-    if(navigator.geolocation) {
-
-        navigator.geolocation.getCurrentPosition(
-            data => {
-                userPosition[0] = data.coords[0]; 
-                userPosition[1] = data.coords[1];
-                next();
-            }
-        );
-
-    }
-
-}
 
 /**
  * Returns current position to caller

@@ -6,7 +6,11 @@ const mapSearch = require('../controllers/mapSearchController.cjs');
 
 //Starting page - map centered on patras
 router.route('/').get((req, res) => {
-    res.render('map_interactive', {style: "main.css", title: "Wow, new map"});
+    res.render('map_static', {style: "main.css", title: "Search in map"});
+});
+
+router.route('/with_location').get((req, res) => { 
+    res.render('map_location', {style: "main.css", title: "With geolocation"})
 });
 
 //Get requests

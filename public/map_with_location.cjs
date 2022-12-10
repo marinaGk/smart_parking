@@ -1,34 +1,17 @@
-//In a crazy fit of inspiration and definitely not desperation you decided to make two different map scripts, this one for static one 
-//and another for non-static
-//The other one will have this code you've bookmarked to track user location every five seconds
-//you will be fetching the location and changing the map as it goes without re rendering
-//NAME THEM ACCORDINGLY AND LEAVE SOME NOTES AS TO WHAT EACH DOES 
+//add marker and circle that will be defined by user looking for nearby pins
 
 /**
- * Uses fetch-api to get current position on map and create tile
- */
-let fetchPosition = () => { 
-    fetch('/position')
-    .then( 
-        (response) => response.json()
-        .then( 
-            (json) => makeMap(json)
-        )
-    )
-}
-
-/**
- * Creates map tile on current position
+ * Makes initial map
  */
 let makeMap = (position) => { 
 
     map = L.map(document.querySelector('#map'), { 
-        center: [position[0], position[1]], 
-        zoom: 13
+        center: position, 
+        zoom: 20
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
-
+    
 }
 
 /**
@@ -57,10 +40,30 @@ let fetchPins = () => {
     )
 }
 
+/**
+ * Called every five seconds to set new user location if geolocation is allowed by user 
+ */
+let setUserPosition = (position) => { 
+
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+    console.log(long);
+    map.panTo(new L.LatLng(lat, long));
+
+}
+
 window.addEventListener('DOMContentLoaded', (event) => { 
     
     let map;
-    fetchPosition();
+    let position = [38.246330, 21.734985];
+    makeMap(position);
     fetchPins();
+    if (!navigator.geolocation) {
+        console.log("Your browser doesn't support geolocation feature!");
+    } else {
+        setInterval(() => {
+            navigator.geolocation.getCurrentPosition(setUserPosition);
+        }, 2000);
+    }
 
 });
