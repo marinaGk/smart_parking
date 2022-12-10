@@ -1,3 +1,9 @@
+//In a crazy fit of inspiration and definitely not desperation you decided to make two different map scripts, this one for static one 
+//and another for non-static
+//The other one will have this code you've bookmarked to track user location every five seconds
+//you will be fetching the location and changing the map as it goes without re rendering
+//NAME THEM ACCORDINGLY AND LEAVE SOME NOTES AS TO WHAT EACH DOES 
+
 /**
  * Uses fetch-api to get current position on map and create tile
  */

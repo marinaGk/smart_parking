@@ -7,13 +7,53 @@ const travelTimeClient = new traveltimeApi.TravelTimeClient({
   applicationId: process.env.APPLICATION_ID,
 });
 
-let position = [38.246330, 21.734985];
+
+let mapPosition = [38.246330, 21.734985];
+
+let userPosition = [38.246330, 21.734985];
+
+/**
+ * Watches user position in real time as they move
+ * TODO: how does map follow user around? 
+ */
+let followUserPosition = (req, res, next) => { 
+
+    if(navigator.geolocation) { 
+        navigator.geolocation.watchPosition(
+            data => {
+                userPosition[0] = data.coords[0]; 
+                userPosition[1] = data.coords[1];
+                next();
+            }
+        );
+    }
+
+}
+
+/**
+ * Only gets current user position
+ */
+let getUserPosition = (req, res, next) => { 
+    
+    if(navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(
+            data => {
+                userPosition[0] = data.coords[0]; 
+                userPosition[1] = data.coords[1];
+                next();
+            }
+        );
+
+    }
+
+}
 
 /**
  * Returns current position to caller
  */
 let getPosition = (req, res) => { 
-    res.send(position);
+    res.send(mapPosition);
 }
 
 /**
@@ -31,8 +71,11 @@ let mapSearchRequest = (req, res, next) => {
     travelTimeClient.geocoding(req.body)
     .then(
         (data) => { 
-            position[0] = data.features[0].geometry.coordinates[1];
-            position[1] = data.features[0].geometry.coordinates[0];
+            console.log(data.features[0]);
+            if (data.features[0] != undefined) { 
+                mapPosition[0] = data.features[0].geometry.coordinates[1];
+                mapPosition[1] = data.features[0].geometry.coordinates[0];
+            }
             next();
         }
     )
