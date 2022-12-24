@@ -7,6 +7,7 @@ const travelTimeClient = new traveltimeApi.TravelTimeClient({
   applicationId: process.env.APPLICATION_ID,
 });
 
+const constMapPosition = [38.246330, 21.734985];
 let mapPosition = [38.246330, 21.734985];
 
 /**
@@ -27,7 +28,6 @@ let renderMap = (req, res) => {
  * Makes request to timetravel api for geocoding and calls renderMap to change map's position
  */
 let mapSearchRequest = (req, res, next) => { 
-    console.log(req.body);
     travelTimeClient.geocoding(req.body)
     .then(
         (data) => { 
@@ -36,11 +36,24 @@ let mapSearchRequest = (req, res, next) => {
                 mapPosition[0] = data.features[0].geometry.coordinates[1];
                 mapPosition[1] = data.features[0].geometry.coordinates[0];
             }
+            else { 
+                mapPosition = constMapPosition;
+            }
             next();
         }
     )
 }
 
+let mapClickRequest = (req, res) => { 
+    travelTimeClient.geocodingReverse({
+        params: {
+          lat: 51.507281, lng: -0.132120,
+        },
+      }).then((data) => console.log(data))
+        .catch((e) => console.error(e));
+}
+
 exports.mapSearchRequest = mapSearchRequest;
 exports.getPosition = getPosition;
 exports.renderMap = renderMap;
+exports.mapClickRequest = mapClickRequest;

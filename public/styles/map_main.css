@@ -80,3 +80,27 @@ form{
     border-radius: 25px;
 }
 
+.leaflet-top.leaflet-right  { 
+    display: none;
+}
+
+.leaflet-top.leaflet-left{ 
+    display: none;
+}
+
+.leaflet-popup.leaflet-zoom-animated .leaflet-popup-content-wrapper{ 
+    background: #E2EDDD;
+}
+
+.leaflet-popup.leaflet-zoom-animated .leaflet-popup-tip { 
+    background: #E2EDDD;   
+}
+
+.waypointButton button{ 
+    height: 35px;
+    line-height: 1.5;
+    font-size: 18px;
+    border: none;
+    background: #E2EDDD; 
+    color: #2e3b51;
+}

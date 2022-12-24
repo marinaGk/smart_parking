@@ -1,0 +1,85 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #E2EDDD;
+}
+
+.img-container { 
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+img { 
+    margin: auto;
+    height: 100%; 
+    width: 100%;
+}
+
+.starter-page-buttons { 
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+}
+
+.page-buttons { 
+    display: flex; 
+    flex-direction: column;
+
+    position: fixed; 
+    bottom: 0;
+
+    width: 100%;
+    height: 45%;
+}
+
+.choise-button { 
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 90%; 
+    margin: auto;
+}
+
+.button { 
+    display: flex;
+    margin: 2% 2% 2% 2%;
+    width: 100%;
+    border-radius: 10px;
+    background-color: #92CF93;
+}
+
+a { 
+    display: flex;
+    flex-direction: row;
+
+    width: 80%;
+    height: 100%;
+    margin: auto;
+    color: #2E3B51;
+    text-decoration: none;
+    font-family: 'Fjalla One', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+a:hover { 
+    text-decoration: none;
+}
+
+p { 
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    justify-content:center;
+}
+
+.arrow { 
+    padding-left: 25%;
+}

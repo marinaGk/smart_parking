@@ -4,13 +4,21 @@ const router = express.Router();
 const pinsController = require('../controllers/pinsContoller.cjs');
 const mapSearch = require('../controllers/mapSearchController.cjs');
 
-//Starting page - map centered on patras
-router.route('/').get((req, res) => {
-    res.render('map_static', {style: "main.css", title: "Search in map"});
+//Starting page 
+router.route('/').get((req, res) => { 
+    res.render('start_page', {layout: 'start_page_main.hbs'})
 });
 
-router.route('/with_location').get((req, res) => { 
-    res.render('map_location', {style: "main.css", title: "With geolocation"})
+router.route('/map_static').get((req, res) => { 
+    res.render('map_static.hbs', {layout: 'map_main.hbs', style: "map_main.css", title: "CHARGE UP"})
+});
+
+router.route('/map_location').get((req, res) => { 
+    res.render('map_location', {layout: 'map_main.hbs', style: "map_main.css", title: "CHARGE UP"})
+});
+
+router.route('/map_planning').get((req, res) => { 
+    res.render('map_planning', {layout: 'map_main.hbs', style: "map_main.css", title: "CHARGE UP"})
 });
 
 //Get requests

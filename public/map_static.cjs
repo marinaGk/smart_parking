@@ -1,5 +1,6 @@
 //instead of rendering the map again look for a way to, each time /locateInMap is routed by the search form, simply change the location here 
 //for the map's center
+//when you change location, do pins load again?
 
 /**
  * Uses fetch-api to get current position on map and create tile
