@@ -18,7 +18,7 @@ router.route('/map_location').get((req, res) => {
 });
 
 router.route('/map_planning').get((req, res) => { 
-    res.render('map_planning', {layout: 'map_main.hbs', title: "CHARGE UP"})
+    res.render('map_planning', {layout: 'map_main.hbs', styles: "map_plan.css", title: "CHARGE UP"})
 });
 
 //Get requests

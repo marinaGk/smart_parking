@@ -94,13 +94,24 @@ let fetchPins = () => {
 }
 
 /**
+ * Makes datepicker to pick date on trip
+ * Called by makeMap
+ */
+let createDatePicker = (container) => { 
+    let input = L.DomUtil.create('input', 'date', container);
+    input.setAttribute('type', 'date');
+    input.setAttribute('placeholder', 'Select date');
+    return input;
+}
+
+/**
  * Makes waypoint button to pick location on trip
  * Called by makeMap
  */
 let createButton = (label, container) => {
-    var btn = L.DomUtil.create('button', '', container);
-    btn.setAttribute('type', 'button');
-    btn.innerHTML = label;
+    let btn = L.DomUtil.create('input', '', container);
+    btn.setAttribute('type', 'submit');
+    btn.setAttribute('value', label);
     return btn;
 }
 
@@ -120,15 +131,27 @@ let makeMap = (position) => {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
     
     map.on('click', function(e) {
-        let waypointButton = L.DomUtil.create('div');
-        L.DomUtil.addClass(waypointButton, 'waypointButton');
-        let waypoint = createButton('Trip location', waypointButton);
-    
-        L.popup()
-            .setContent(waypointButton)
-            .setLatLng(e.latlng)
-            .openOn(map);
 
+        //make datepicker in popup
+        let datepickerInput = L.DomUtil.create('div');
+        L.DomUtil.addClass(datepickerInput, 'datepicker-input');
+        let datepicker = createDatePicker(datepickerInput);
+
+        //make button in popup
+        let waypointButton = L.DomUtil.create('div');
+        L.DomUtil.addClass(waypointButton, 'waypoint-button');
+        let waypoint = createButton('Trip location', waypointButton);
+
+        //make popup contents (form to make reservation)
+        let popupContent = L.DomUtil.create('form');
+        L.DomUtil.addClass(popupContent, 'popup-content')
+        //here you will set what will happen once the booking is made (aka set date and make waypoint(the make waypoint function will have to also maintain said waypoint in database))
+        //popupContent.setAttribute('action', '');
+        popupContent.appendChild(datepickerInput);
+        popupContent.appendChild(waypointButton);
+    
+        let popup = L.popup().setContent(popupContent).setLatLng(e.latlng).openOn(map);
+        
         L.DomEvent.on(waypoint, 'click', function() { 
             makeNewWaypoint(e.latlng); 
             map.closePopup();

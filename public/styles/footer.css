@@ -21,8 +21,7 @@
 }
 
 .choice-button { 
-    display: flex;
-    flex-direction: row;
+    
     height: 8%;
     width: 25%; 
 }
@@ -54,5 +53,9 @@ a {
 
     justify-content: center;
     align-items: center;
+}
+
+svg { 
+    color:  #2E3B51;
 }
  
