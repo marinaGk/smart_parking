@@ -10,15 +10,15 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/map_static').get((req, res) => { 
-    res.render('map_static.hbs', {layout: 'map_main.hbs', style: "map_main.css", title: "CHARGE UP"})
+    res.render('map_static.hbs', {layout: 'map_main.hbs', title: "CHARGE UP"})
 });
 
 router.route('/map_location').get((req, res) => { 
-    res.render('map_location', {layout: 'map_main.hbs', style: "map_main.css", title: "CHARGE UP"})
+    res.render('map_location', {layout: 'map_main.hbs', title: "CHARGE UP"})
 });
 
 router.route('/map_planning').get((req, res) => { 
-    res.render('map_planning', {layout: 'map_main.hbs', style: "map_main.css", title: "CHARGE UP"})
+    res.render('map_planning', {layout: 'map_main.hbs', title: "CHARGE UP"})
 });
 
 //Get requests

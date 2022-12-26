@@ -2,11 +2,13 @@ const traveltimeApi = require('traveltime-api');
 const dotenv = require('dotenv');
 dotenv.config();
 
+//Geocoding api for static map
 const travelTimeClient = new traveltimeApi.TravelTimeClient({
   apiKey: process.env.API_KEY,
   applicationId: process.env.APPLICATION_ID,
 });
 
+//Initial map position and dynamic one
 const constMapPosition = [38.246330, 21.734985];
 let mapPosition = [38.246330, 21.734985];
 
@@ -18,10 +20,10 @@ let getPosition = (req, res) => {
 }
 
 /**
- * Called every time there's a change in location to re-render map main page with current position as center
+ * Called every time there's a change in location to re-render static map page with current position as center
  */
 let renderMap = (req, res) => { 
-    res.redirect('/');
+    res.redirect('/map_static');
 }
 
 /**
@@ -44,16 +46,6 @@ let mapSearchRequest = (req, res, next) => {
     )
 }
 
-let mapClickRequest = (req, res) => { 
-    travelTimeClient.geocodingReverse({
-        params: {
-          lat: 51.507281, lng: -0.132120,
-        },
-      }).then((data) => console.log(data))
-        .catch((e) => console.error(e));
-}
-
 exports.mapSearchRequest = mapSearchRequest;
 exports.getPosition = getPosition;
 exports.renderMap = renderMap;
-exports.mapClickRequest = mapClickRequest;

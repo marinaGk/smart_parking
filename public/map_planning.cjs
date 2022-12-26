@@ -1,21 +1,101 @@
+//add routes between waypoints
+
 let map;
 let pinlist = [];
 
 /**
- * Uses fetch-api to get current position on map and create tile
+ * General charger icon
  */
-let fetchPosition = () => { 
-    fetch('/position')
-    .then( 
+let pinIcon = L.icon({ 
+
+    //icon content is 15x21 which determines the anchor
+    iconUrl: 'imgs/chargerPin.png', 
+    iconAnchor: [12.5, 23]
+
+});
+
+//Waypoint functions
+/**
+ * Finds distance between charging spots
+ * Called by findPins
+ */
+let getDistance = (from, to) => { 
+    let distance = from.distanceTo(to);
+    return distance;
+}
+
+/**
+ * Creates markers for spots within radius of waypoint 
+ * Called by findPins
+ */
+let createPin = (spot) => { 
+    let spotMarker = L.marker(spot, {icon: pinIcon}).addTo(map);
+}
+
+/**
+ * Finds charging spots within radius of waypoint
+ * Called by makeNewWaypoint
+ * Calls createPin
+ */
+let findPins = (coordinates) => { 
+    
+    const radius = 5000;
+    for (i of pinlist) { 
+        let latLng = L.latLng(i.spcoordinates.x, i.spcoordinates.y);
+        let distance = getDistance(coordinates, latLng);
+        if (distance < radius) { 
+            createPin(latLng);
+        }
+    }
+}
+
+/**
+ * Makes new waypoint in route
+ * Called by makeMap
+ * Calls findPins
+ */
+let makeNewWaypoint = (coordinates) => { 
+    let waypointMarker = L.marker(coordinates, {icon: pinIcon}).addTo(map);
+    let circle = L.circle(coordinates, {
+        color: '#2E3B51',
+        radius: 5000,
+        fillColor: '#2E3B51',
+        opacity: 0.5
+      }).addTo(map);
+    findPins(coordinates);
+}
+
+//General functions
+/**
+ * Creates an array of all pins
+ * Called by fetch pins in the beginning
+ */
+let createPinList = (spots) => { 
+
+    for (let i of spots) { 
+        pinlist.push(i);
+    }
+
+}
+
+/**
+ * Uses fetch-api to get charging spot locations from database
+ * Called when content loads
+ * Calls createPinList
+ */
+let fetchPins = () => {
+    fetch('/pins')
+    .then(
         (response) => response.json()
-        .then( 
-            (json) => makeMap(json)
+        .then(
+            (json) => createPinList(json)
         )
     )
 }
 
 /**
  * Makes waypoint button to pick location on trip
+ * Called by makeMap
  */
 let createButton = (label, container) => {
     var btn = L.DomUtil.create('button', '', container);
@@ -27,6 +107,8 @@ let createButton = (label, container) => {
 /**
  * Creates map tile on current position
  * Adds ability to click on map with popup to add waypoint
+ * Called by fetchPosition in beginning
+ * Calls makeNewWaypoint when popup is used
  */
 let makeMap = (position) => { 
 
@@ -48,7 +130,7 @@ let makeMap = (position) => {
             .openOn(map);
 
         L.DomEvent.on(waypoint, 'click', function() { 
-            makeNewWaypoint(map, e.latlng); 
+            makeNewWaypoint(e.latlng); 
             map.closePopup();
         });
     });
@@ -56,67 +138,16 @@ let makeMap = (position) => {
 }
 
 /**
- * Makes new waypoint in route
+ * Uses fetch-api to get current position on map and create tile
+ * Called when content loads
+ * Calls makeMap
  */
-let makeNewWaypoint = (map, coordinates) => { 
-    let waypointMarker = L.marker(coordinates);
-    waypointMarker.addTo(map);
-    /*L.DomUtil.addClass(waypointMarker, 'waypointMarker');*/
-
-    findPins(coordinates);
-}
-
-/**
- * Called by findPins() to check for close spots
- */
-let getDistance = (from, to) => { 
-    let distance = from.distanceTo(to);
-    return distance;
-}
-
-/**
- * Creates markers for spots within radius of waypoint 
- */
-let createPin = (spot) => { 
-    let spotMarker = L.marker(spot);
-    spotMarker.addTo(map);
-}
-
-/**
- * Finds charging spots within radius of waypoint
- */
-let findPins = (coordinates) => { 
-    
-    const radius = 10000;
-    for (i of pinlist) { 
-        let latLng = L.latLng(i.spcoordinates.x, i.spcoordinates.y);
-        let distance = getDistance(coordinates, latLng);
-        if (distance < radius) { 
-            createPin(latLng);
-        }
-    }
-}
-
-/**
- * Creates an array of all pins
- */
-let createPinList = (spots) => { 
-
-    for (let i of spots) { 
-        pinlist.push(i);
-    }
-
-}
-
-/**
- * Uses fetch-api to get charging spot locations from database and calls createPins to position them on map
- */
-let fetchPins = () => {
-    fetch('/pins')
-    .then(
+let fetchPosition = () => { 
+    fetch('/position')
+    .then( 
         (response) => response.json()
-        .then(
-            (json) => createPinList(json)
+        .then( 
+            (json) => makeMap(json)
         )
     )
 }

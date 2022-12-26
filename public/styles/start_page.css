@@ -6,19 +6,22 @@ body {
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #E2EDDD;
+    background-color: #e6f0e3;
 }
 
 .img-container { 
     display: flex;
     flex-direction: row;
     width: 100%;
+    height: 55%;
 }
 
 img { 
     margin: auto;
-    height: 100%; 
+    height: 100%;
     width: 100%;
+    max-width: 351px;
+    max-height: 291px;
 }
 
 .starter-page-buttons { 
