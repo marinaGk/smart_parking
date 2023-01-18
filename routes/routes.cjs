@@ -6,7 +6,7 @@ const mapSearch = require('../controllers/mapSearchController.cjs');
 
 //Starting page 
 router.route('/').get((req, res) => { 
-    res.render('start_page', {layout: 'start_page_main.hbs'})
+    res.render('info_page.hbs', {layout: 'start_page_main.hbs'})
 });
 
 router.route('/map_static').get((req, res) => { 

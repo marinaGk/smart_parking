@@ -10,6 +10,7 @@ let map;
 let pinIcon = L.icon({ 
 
     //icon content is 15x21 which determines the anchor
+    className: 'spot-pin',
     iconUrl: 'imgs/chargerPin.png', 
     iconAnchor: [12.5, 23]
 
@@ -24,7 +25,11 @@ let createPins = (spots) => {
     for (let i of spots) { 
         let position = i.spcoordinates;
         let pin = L.marker([position.x, position.y], {icon: pinIcon}).addTo(map);
+        pin.on('click', function(event) { 
+            window.location = "/";
+        });
     }
+
 }
 
 /**
