@@ -68,6 +68,10 @@ img {
     align-items: center;
 }
 
+.icon a { 
+    color: #2E3B51;
+}
+
 .info-container { 
     overflow: auto;
     display: flex;

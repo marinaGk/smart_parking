@@ -14,4 +14,16 @@ function getSpots(req, res) {
     });
 }
 
+function getChargers(req, res) { 
+    model.chargers((err, rows) => { 
+        if(err) { 
+            res.send(err); 
+        }
+        else { 
+            res.send(rows);
+        }
+    });
+}
+
 exports.getSpots = getSpots;
+exports.getChargers = getChargers;

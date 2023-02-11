@@ -22,11 +22,17 @@ let pinIcon = L.icon({
  */
 let createPins = (spots) => { 
 
+    let pins = {};
+
     for (let i of spots) { 
         let position = i.spcoordinates;
-        let pin = L.marker([position.x, position.y], {icon: pinIcon}).addTo(map);
-        pin.on('click', function(event) { 
-            window.location = "/";
+        pins[i.spotid] = L.marker([position.x, position.y], {icon: pinIcon}).addTo(map);
+        pins[i.spotid].on('click', function(event) { 
+           
+            let spotid = i.spotid;
+            localStorage.setItem('currentPin', spotid);
+            window.location = "/pin_info";
+
         });
     }
 

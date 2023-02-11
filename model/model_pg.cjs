@@ -27,4 +27,23 @@ let pins = (callback) => {
 
 }
 
-module.exports = {pins};
+let chargers = (callback) => { 
+
+    const query = { 
+        text: 
+        `SELECT * 
+        FROM charger`
+    } 
+
+    sql.query(query, function(err, chargers){ 
+        if (err) { 
+            callback(err.stack)
+        }
+        else { 
+            callback(null, chargers.rows)
+        }
+    })
+
+}
+
+module.exports = {pins, chargers};
