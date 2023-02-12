@@ -1,7 +1,12 @@
 //add routes between waypoints
 
 let map;
+let currentLocation;
 let pinlist = [];
+let modal = document.querySelector('.modal-container');
+let state = true;
+let timevar; 
+let datevar; 
 
 /**
  * General charger icon
@@ -13,6 +18,20 @@ let pinIcon = L.icon({
     iconAnchor: [12.5, 23]
 
 });
+
+//Info functions
+let proceedWithInfo = () => { 
+    datevar = document.getElementById("date").value;
+    timevar = document.getElementById("time").value;
+    modal.style.zIndex = -1;
+    state = false;
+    makeNewWaypoint(currentLocation);
+}
+
+let cancel = () => { 
+    currentLocation = undefined;
+    modal.style.zIndex = -1;
+}
 
 //Waypoint functions
 /**
@@ -29,7 +48,8 @@ let getDistance = (from, to) => {
  * Called by findPins
  */
 let createPin = (spot) => { 
-    let spotMarker = L.marker(spot, {icon: pinIcon}).addTo(map);
+    let spotMarker = L.marker(spot, {icon: pinIcon});
+    return spotMarker;
 }
 
 /**
@@ -40,13 +60,22 @@ let createPin = (spot) => {
 let findPins = (coordinates) => { 
     
     const radius = 5000;
+    let validpins = [];
     for (i of pinlist) { 
         let latLng = L.latLng(i.spcoordinates.x, i.spcoordinates.y);
         let distance = getDistance(coordinates, latLng);
         if (distance < radius) { 
-            createPin(latLng);
+            let marker = createPin(latLng);
+            marker.on('click', function() { 
+                let spotid = i.spotid;
+                localStorage.setItem('currentPin', spotid);
+                window.location = "/pin_info";
+            });
+            validpins.push(marker);
         }
     }
+
+    return validpins;
 }
 
 /**
@@ -55,14 +84,32 @@ let findPins = (coordinates) => {
  * Calls findPins
  */
 let makeNewWaypoint = (coordinates) => { 
+
     let waypointMarker = L.marker(coordinates, {icon: pinIcon}).addTo(map);
+    let cancelButton = L.DomUtil.create('div');
+    L.DomUtil.addClass(cancelButton, 'waypoint-button');
+    let cancelation = createButton('Cancel location', cancelButton);
+    waypointMarker.bindPopup(cancelation);
+
     let circle = L.circle(coordinates, {
         color: '#2E3B51',
         radius: 5000,
         fillColor: '#2E3B51',
         opacity: 0.5
-      }).addTo(map);
-    findPins(coordinates);
+    }).addTo(map);
+
+    let pins = findPins(coordinates);
+    let pinsLayer = L.layerGroup(pins).addTo(map);
+
+    L.DomEvent.on(cancelation, 'click', function() { 
+        map.removeLayer(waypointMarker);
+        map.removeLayer(circle);
+        map.removeLayer(pinsLayer);
+        state = true;
+        timevar = undefined;
+        datevar = undefined;
+    });
+
 }
 
 //General functions
@@ -94,17 +141,6 @@ let fetchPins = () => {
 }
 
 /**
- * Makes datepicker to pick date on trip
- * Called by makeMap
- */
-let createDatePicker = (container) => { 
-    let input = L.DomUtil.create('input', 'date', container);
-    input.setAttribute('type', 'date');
-    input.setAttribute('placeholder', 'Select date');
-    return input;
-}
-
-/**
  * Makes waypoint button to pick location on trip
  * Called by makeMap
  */
@@ -129,33 +165,24 @@ let makeMap = (position) => {
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
-    
+
     map.on('click', function(e) {
-
-        //make datepicker in popup
-        let datepickerInput = L.DomUtil.create('div');
-        L.DomUtil.addClass(datepickerInput, 'datepicker-input');
-        let datepicker = createDatePicker(datepickerInput);
-
-        //make button in popup
-        let waypointButton = L.DomUtil.create('div');
-        L.DomUtil.addClass(waypointButton, 'waypoint-button');
-        let waypoint = createButton('Trip location', waypointButton);
-
-        //make popup contents (form to make reservation)
-        let popupContent = L.DomUtil.create('form');
-        L.DomUtil.addClass(popupContent, 'popup-content')
-        //here you will set what will happen once the booking is made (aka set date and make waypoint(the make waypoint function will have to also maintain said waypoint in database))
-        //popupContent.setAttribute('action', '');
-        popupContent.appendChild(datepickerInput);
-        popupContent.appendChild(waypointButton);
-    
-        let popup = L.popup().setContent(popupContent).setLatLng(e.latlng).openOn(map);
-        
-        L.DomEvent.on(waypoint, 'click', function() { 
-            makeNewWaypoint(e.latlng); 
-            map.closePopup();
-        });
+        if (state) {
+            let waypointButton = L.DomUtil.create('div');
+            L.DomUtil.addClass(waypointButton, 'waypoint-button');
+            let waypoint = createButton('Trip location', waypointButton);
+            L.popup().setContent(waypoint).setLatLng(e.latlng).openOn(map);
+            
+            L.DomEvent.on(waypoint, 'click', function() { 
+                currentLocation = e.latlng;
+                map.closePopup();
+                modal.style.zIndex = 1050;
+                let button = document.querySelector(".submit");
+                button.addEventListener('click', proceedWithInfo);
+                let cancelButton = document.querySelector(".close");
+                cancelButton.addEventListener('click', cancel);
+            });
+        }
     });
 
 }

@@ -1,5 +1,4 @@
 body { 
-
     padding: 0; 
     margin: 0;
     width: 100vw;
@@ -13,9 +12,9 @@ body {
     width: 100%;
 }
 
-form{ 
+/*form{ 
     height: 100%;
-}
+}*/
 
 .search{ 
 
