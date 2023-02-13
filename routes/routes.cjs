@@ -21,8 +21,12 @@ router.route('/map_planning').get((req, res) => {
     res.render('map_planning', {layout: 'map_main.hbs', styles: "map_plan.css", title: "CHARGE UP"})
 });
 
-router.route('/pin_info').get((req, res) => { 
-    res.render('info_page', {layout: 'info_main.hbs', style: 'info_page.css', title: "CHARGE UP"})
+router.route('/pin_static').get((req, res) => { 
+    res.render('info_static', {layout: 'info_main.hbs', style: 'info_page.css', title: "CHARGE UP"})
+});
+
+router.route('/pin_planning').get((req, res) => { 
+    res.render('info_planning', {layout: 'info_main.hbs', style: 'info_page.css', title: "CHARGE UP"})
 });
 
 //Get requests

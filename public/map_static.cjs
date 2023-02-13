@@ -22,6 +22,7 @@ let pinIcon = L.icon({
  */
 let createPins = (spots) => { 
 
+    console.log(spots);
     let pins = {};
 
     for (let i of spots) { 
@@ -31,7 +32,7 @@ let createPins = (spots) => {
            
             let spotid = i.spotid;
             localStorage.setItem('currentPin', spotid);
-            window.location = "/pin_info";
+            window.location = "/pin_static";
 
         });
     }

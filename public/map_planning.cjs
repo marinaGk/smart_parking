@@ -89,7 +89,7 @@ let findPins = (coordinates) => {
             marker.on('click', function() { 
                 let spotid = i.spotid;
                 localStorage.setItem('currentPin', spotid);
-                window.location = "/pin_info";
+                window.location = "/pin_planning";
             });
             validpins.push(marker);
         }
