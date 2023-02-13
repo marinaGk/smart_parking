@@ -1,6 +1,3 @@
-//add circle that will be defined by user looking for nearby pins
-//make it so originally zoom is 9 and then increases to current position 
-
 let marker; 
 let circle;
 let counter = 0;

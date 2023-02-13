@@ -12,7 +12,7 @@ app.use('/', routes);
 
 app.engine('hbs', exphbs.engine({
   extname: 'hbs', 
-  defaultLayout: 'main.hbs', 
+  defaultLayout: 'start_page_main.hbs', 
 }));
 
 app.set('view engine', 'hbs');

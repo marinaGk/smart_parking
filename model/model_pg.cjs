@@ -27,6 +27,9 @@ let pins = (callback) => {
 
 }
 
+/**
+ * Selects all chargers from CHARGER table
+ */
 let chargers = (callback) => { 
 
     const query = { 
@@ -46,4 +49,26 @@ let chargers = (callback) => {
 
 }
 
-module.exports = {pins, chargers};
+/**
+ * Selects all reservations from RESERVATION table
+ */
+let reservations = (callback) => { 
+    
+    const query = { 
+        text: 
+        `SELECT * 
+        FROM reservation`
+    } 
+
+    sql.query(query, function(err, reservations){ 
+        if (err) { 
+            callback(err.stack)
+        }
+        else { 
+            callback(null, reservations.rows)
+        }
+    })
+
+}
+
+module.exports = {pins, chargers, reservations};

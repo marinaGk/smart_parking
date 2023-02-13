@@ -37,21 +37,36 @@ CREATE TABLE CHARGER (
 
 );
 
+/*Trip info*/ 
+
+CREATE TABLE TRIP ( 
+
+    TripID SERIAL NOT NULL UNIQUE, 
+    TripName varchar(100) NOT NULL, 
+    TripUserID INTEGER NOT NULL, 
+    PRIMARY KEY (TripID)
+
+);
+
 /*Reservation info*/ 
 
 CREATE TABLE RESERVATION ( 
 
     ReservationID SERIAL NOT NULL UNIQUE, 
-    ResDuration varchar(100) NOT NULL, 
-    ResDate DATE NOT NULL, 
-    ResTime TIME NOT NULL, 
+    ResDate varchar(10) NOT NULL, 
+    ResStartTime varchar(5) NOT NULL, 
+    ResEndTime varchar(5) NOT NULL,
     ResUserID INTEGER NOT NULL,
     ResChargerID INTEGER NOT NULL, 
     ResSpotID INTEGER NOT NULL, 
+    ResTripID INTEGER,
     FOREIGN KEY (ResUserID) REFERENCES USERINFO (UserID),
     FOREIGN KEY (ResChargerID) REFERENCES CHARGER (ChargerID),
     FOREIGN KEY (ResSpotID) REFERENCES SPOT (SpotID),
+    FOREIGN KEY (ResTripID) REFERENCES TRIP (TripID),
     PRIMARY KEY(ReservationID)
 
 );
 
+/*insert into  reservation (resdate, resstarttime, resendtime, resuserid, reschargerid, resspotid)
+values ('2023-02-07', '12:12', '12:42', 1, 2, 1)*/

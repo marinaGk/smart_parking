@@ -22,12 +22,13 @@ router.route('/map_planning').get((req, res) => {
 });
 
 router.route('/pin_info').get((req, res) => { 
-    res.render('info_page.hbs', {layout: 'start_page_main.hbs', style: 'info_page.css', title: "CHARGE UP"})
+    res.render('info_page', {layout: 'info_main.hbs', style: 'info_page.css', title: "CHARGE UP"})
 });
 
 //Get requests
 router.get('/pins', pinsController.getSpots);
 router.get('/chargers', pinsController.getChargers);
+router.get('/reservations', pinsController.getReservations);
 router.get('/position', mapSearch.getPosition);
 
 //Post requests
