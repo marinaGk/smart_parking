@@ -236,14 +236,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
     
     currentDate = new Date();
     let dd = String(currentDate.getDate()).padStart(2, '0');
-    let mm = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let mm = String(currentDate.getMonth() + 1).padStart(2, '0'); 
     let yyyy = currentDate.getFullYear();
 
     currentDate = yyyy + '-' + mm + '-' + dd;
     
     currentTime = new Date();
     let mins = currentTime.getMinutes();
-    if (mins.length == 1) { 
+    if ((mins.toString()).length == 1) { 
         mins = "0" + mins.toString();
     }
     else { 

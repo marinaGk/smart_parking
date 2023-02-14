@@ -22,6 +22,23 @@ let pinIcon = L.icon({
 
 //Info functions
 /**
+ * Changes sessionStorage values
+ * Called by makeNewWaypoint
+ */
+let changeInfo = () => { 
+    datevar = document.getElementById("date").value;
+    sessionStorage.setItem('date', datevar);
+    timevar = document.getElementById("time").value;
+    sessionStorage.setItem('time', timevar);
+    durvar = document.getElementById("duration").value;
+    sessionStorage.setItem('duration', durvar);
+    modal.style.zIndex = -1;
+    modal.style.display = 'none';
+    state = false;
+    sessionStorage.setItem('state', state);
+}
+
+/**
  * Sets sessionStorage values to store current pin for reservation in trip 
  * Called by makeMap once popup is filled
  * Calls makeNewWaypoint
@@ -47,7 +64,9 @@ let proceedWithInfo = () => {
  * Called by makeMap to cloce popup
  */
 let cancel = () => { 
-    currentLocation = undefined;
+    if (state == true) { 
+        currentLocation = undefined;
+    }
     modal.style.zIndex = -1;
     modal.style.display = 'none';
 }
@@ -110,12 +129,10 @@ let makeNewWaypoint = (coordinates) => {
     let changeButton = L.DomUtil.create('div');
     L.DomUtil.addClass(changeButton, 'waypoint-button');
     let change = createButton('Change location', changeButton);
-    //waypointMarker.bindPopup(change);
 
     let cancelButton = L.DomUtil.create('div');
     L.DomUtil.addClass(cancelButton, 'waypoint-button');
     let cancelation = createButton('Cancel location', cancelButton);
-    //waypointMarker.bindPopup(change);
 
     let buttons = L.DomUtil.create('div');
     buttons.appendChild(cancelation);
@@ -148,6 +165,19 @@ let makeNewWaypoint = (coordinates) => {
         sessionStorage.removeItem('duration');
         durvar = undefined;
     });
+
+    L.DomEvent.on(change, 'click', function() { 
+        
+        map.closePopup();        
+        modal.style.display = 'block';
+        modal.style.zIndex = 1050;
+
+        let button = document.querySelector(".submit");
+        button.addEventListener('click', changeInfo);
+        let cancelButton = document.querySelector(".res-close");
+        cancelButton.addEventListener('click', cancel);
+
+    })
 
 }
 
