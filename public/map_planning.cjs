@@ -10,6 +10,17 @@ let datevar;
 let durvar;
 
 /**
+ * 
+ */
+let waypointIcon = L.icon({ 
+
+    //icon content is 15x21 which determines the anchor
+    iconUrl: 'imgs/tripPin.png', 
+    iconAnchor: [12.5, 23]
+
+});
+
+/**
  * General charger icon
  */
 let pinIcon = L.icon({ 
