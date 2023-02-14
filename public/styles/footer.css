@@ -1,0 +1,61 @@
+#footer { 
+    position: fixed;
+    bottom: 0;
+    height: 8%;
+    width: 100%;
+    background: #e6f0e3;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-buttons { 
+    display: flex;
+    flex-direction: row;
+
+    height: 100%;
+    width: 100%;
+    margin: 0%; 
+    padding: 0%;
+
+    list-style: none;
+}
+
+.choice-button { 
+    
+    height: 8%;
+    width: 25%; 
+}
+
+#back { 
+    position: fixed; 
+    left: 0;
+}
+
+#account {
+    position: fixed; 
+    right: 0;
+}
+
+.button { 
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+}
+
+a {
+    display: flex;
+
+    margin: 0%;
+    width: 100%;
+    height: 100%;
+    color: #2E3B51;
+
+    justify-content: center;
+    align-items: center;
+}
+
+svg { 
+    color:  #2E3B51;
+}
+ 
