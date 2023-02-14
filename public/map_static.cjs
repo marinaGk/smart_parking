@@ -1,8 +1,9 @@
 /**
  * Used by both location and static map
  */
-
 let map;
+let pinlist = [];
+let modal = document.querySelector('.res-modal-container');
 
 /**
  * General charger icon
@@ -17,26 +18,80 @@ let pinIcon = L.icon({
 });
 
 /**
- * Positions charging spots on map placing a pin on each of them
- * Called by fetchPins
+ * Sets sessionStorage values to store current pin for reservation in trip 
+ * Called by makeMap once popup is filled
+ * Calls makeNewWaypoint
  */
-let createPins = (spots) => { 
+let proceedWithInfo = () => { 
 
-    console.log(spots);
+    datevar = document.getElementById("date").value;
+    sessionStorage.setItem('date', datevar);
+    timevar = document.getElementById("time").value;
+    sessionStorage.setItem('time', timevar);
+    durvar = document.getElementById("duration").value;
+    sessionStorage.setItem('duration', durvar);
+    modal.style.zIndex = -1;
+    modal.style.display = 'none';
+    window.location = '/pin_static';
+
+}
+
+/**
+ * Cancels current pin for reservation in trip and closes popup
+ * Called by openModal to cloce popup
+ */
+let cancel = () => { 
+    modal.style.zIndex = -1;
+    modal.style.display = 'none';
+}
+
+/**
+ * Opens modal for reservation details 
+ * Called by createPins
+ */
+let openModal = () => { 
+    
+    modal.style.display = 'block';
+    modal.style.zIndex = 1050;
+
+    let button = document.querySelector(".submit");
+    button.addEventListener('click', proceedWithInfo);
+    let cancelButton = document.querySelector(".res-close");
+    cancelButton.addEventListener('click', cancel);
+
+}
+
+/**
+ * Positions charging spots on map placing a pin on each of them
+ * Called by makeMap
+ */
+let createPins = () => { 
+
     let pins = {};
 
-    for (let i of spots) { 
+    for (let i of pinlist) { 
         let position = i.spcoordinates;
         pins[i.spotid] = L.marker([position.x, position.y], {icon: pinIcon}).addTo(map);
         pins[i.spotid].on('click', function(event) { 
            
             let spotid = i.spotid;
-            localStorage.setItem('currentPin', spotid);
-            window.location = "/pin_static";
+            sessionStorage.setItem('currentPin', spotid);
+            openModal();
 
         });
     }
 
+}
+
+/**
+ * Positions charging spots on map placing a pin on each of them
+ * Called by fetchPins
+ */
+let createPinList = (spots) => { 
+    for (let i of spots) { 
+        pinlist.push(i);
+    }
+    fetchPosition();
 }
 
 /**
@@ -48,7 +103,7 @@ let fetchPins = () => {
     .then(
         (response) => response.json()
         .then(
-            (json) => createPins(json)
+            (json) => createPinList(json)
         )
     )
 }
@@ -65,6 +120,8 @@ let makeMap = (position) => {
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+
+    createPins();
 
 }
 
@@ -84,7 +141,6 @@ let fetchPosition = () => {
 
 window.addEventListener('DOMContentLoaded', (event) => { 
     
-    fetchPosition();
     fetchPins();
 
 });

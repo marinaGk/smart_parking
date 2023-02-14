@@ -1,5 +1,6 @@
 let marker; 
 let circle;
+let pinlist = [];
 let counter = 0;
 let timeout = 3000;
 
@@ -11,6 +12,17 @@ const options = {
 };
 
 /**
+ * General charger icon
+ */
+let pinIcon = L.icon({ 
+
+    //icon content is 15x21 which determines the anchor
+    iconUrl: 'imgs/chargerPin.png', 
+    iconAnchor: [12.5, 23]
+
+});
+
+/**
  * Pin to indicate used location
  */
 let positionIcon = L.icon({
@@ -19,6 +31,51 @@ let positionIcon = L.icon({
     iconUrl: 'imgs/location.png', 
     iconAnchor:   [11, 7]
 });
+
+/**
+ * Creates markers for spots within radius of waypoint 
+ * Called by findPins
+ */
+let createPin = (spot) => { 
+    let spotMarker = L.marker(spot, {icon: pinIcon});
+    return spotMarker;
+}
+
+/**
+ * Finds distance between charging spots
+ * Called by findPins
+ */
+let getDistance = (from, to) => { 
+    let distance = from.distanceTo(to);
+    return distance;
+}
+
+/**
+ * Finds charging spots within radius of waypoint
+ * Called by setUserPosition
+ * Calls createPin
+ */
+let findPins = (coordinates) => { 
+
+    const radius = 5000;
+    let validpins = [];
+
+    for (let i of pinlist) {     
+        let latLng = L.latLng(i.spcoordinates.x, i.spcoordinates.y);
+        let distance = getDistance(coordinates, latLng);
+        if (distance < radius) { 
+            let marker = createPin(latLng);
+            marker.on('click', function() { 
+                let spotid = i.spotid;
+                sessionStorage.setItem('currentPin', spotid);
+                window.location = "/pin_static";
+            });
+            validpins.push(marker);
+        }
+    }
+    
+    return validpins;
+}
 
 /**
  * Called every five seconds to set new user location if geolocation is allowed by user 
@@ -48,6 +105,39 @@ let setUserPosition = (position) => {
         fillColor: '#2E3B51',
         opacity: 0.5
       }).addTo(map);
+
+    let pins = findPins(L.latLng(lat, long));
+    let pinsLayer = L.layerGroup(pins).addTo(map);
+
+}
+
+/**
+ * Creates map tile on current position
+ * Called by fetchPosition
+ */
+let makeMap = (position) => { 
+
+    map = L.map(document.querySelector('#map'), { 
+        center: [position[0], position[1]], 
+        zoom: 13
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+
+}
+
+/**
+ * Uses fetch-api (calls mapSearch.getPosition) to get current position on map and create tile
+ * Calls makeMap
+ */
+let fetchPosition = () => { 
+    fetch('/position')
+    .then( 
+        (response) => response.json()
+        .then( 
+            (json) => makeMap(json)
+        )
+    )
 }
 
 /**
@@ -57,8 +147,34 @@ let error = (err) => {
     console.log("error geolocating")
 }
 
+/**
+ * Positions charging spots on map placing a pin on each of them
+ * Called by fetchPins
+ */
+let createPinList = (spots) => { 
+    for (let i of spots) { 
+        pinlist.push(i);
+    }
+}
+
+/**
+ * Uses fetch-api (calls pinsController.getSpots) to get charging spot locations from database 
+ * Calls createPins
+ */
+let fetchPins = () => { 
+    fetch('/pins')
+    .then(
+        (response) => response.json()
+        .then(
+            (json) => createPinList(json)
+        )
+    )
+}
+
 window.addEventListener('DOMContentLoaded', (event) => { 
 
+    fetchPins();
+    fetchPosition();
     if (!navigator.geolocation) {
         console.log("Your browser doesn't support geolocation feature!");
     } else {

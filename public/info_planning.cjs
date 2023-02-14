@@ -1,4 +1,5 @@
 let currentPin;
+let currentTrip;
 let state = true;
 let currentDate; 
 let currentTime;
@@ -7,32 +8,41 @@ let chargerAvailability = false;
 let resList = [];
 
 //Reservation button functions
-//notice how those will need to use the same popup as map planning in map static
-//i say make a layout for info page and then use different popup for static (with details) and confirmation popup with location and planning
-//use the same function each time, if static, currentDate will be set to chosen, as well as time and duration, if planning it is already set and if location, just pick duration and get the next from pc
-//after making reservation don't forget to clear page if you're in static
+let redirect = (reservationid) => { 
+    if (reservationid) { 
+        sessionStorage.removeItem('state');
+        sessionStorage.removeItem('date');
+        sessionStorage.removeItem('time');
+        sessionStorage.removeItem('duration');
+        window.location = '/map_planning';
+    }
+}
+
 let makeReservation = (evt) => { 
 
     const body = { 
         date: currentDate, 
         starttime: currentTime, 
-        enttime: duration, 
+        endtime: duration, 
         userid: 1, 
         chargerid: evt.currentTarget.chargerid,
-        spotid: evt.currentTarget.chspotid
+        spotid: Number(currentPin),
+        tripid: currentTrip
     }
-    
-    /*fetch('/makeReservation', { 
-        method: "post",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" }
+
+    //do a fetch post request here to make reservation
+    fetch('/makeReservation', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
     })
-    .then(res => res.json())
-    .then(json => console.log(json))
-    .catch(err => console.log(err))*/
-
-    alert (body.date);
-
+    .then(
+        (response) => response.json()
+        .then(
+            (json) => redirect(json)
+        )
+    )
+    
 }
 
 //Info functions
@@ -54,19 +64,15 @@ let setAvailability = (i, text) => {
 
                     let givenstartTime = currentTime + ":00";
                     givenstartTime = new Date(currentDate + "T" + givenstartTime);
-                    console.log("givenstart", givenstartTime.getTime());
                     
                     let givenendTime = duration + ":00";
                     givenendTime = new Date(currentDate + "T" + givenendTime);
-                    console.log("givenend", givenendTime.getTime());
                     
                     let resstartTime = j.resstarttime + ":00";
                     resstartTime = new Date(currentDate + "T" + resstartTime);
-                    console.log("resstart", resstartTime.getTime());
 
                     let resendTime = j.resendtime + ":00";
                     resendTime  = new Date(currentDate + "T" + resendTime );
-                    console.log("resend", resendTime.getTime());
 
                     if ((resstartTime.getTime() < givenstartTime.getTime() & givenstartTime.getTime() < resendTime.getTime()) ||
                     (resstartTime.getTime() < givenendTime.getTime() & givenendTime.getTime() < resendTime.getTime())) { 
@@ -139,26 +145,10 @@ let setInfo = (pin) => {
 
     let info_field = document.querySelector(".location_info");
     info_field.innerHTML = pin.splocationinfo;
-
+    fetchChargers();
 }
 
 //Fetch functions
-let findReservations = (reservations) => { 
-    for (let i of reservations) { 
-        resList.push(i);
-    }
-}
-
-let fetchReservations = () => { 
-    fetch('/reservations')
-    .then(
-        (response) => response.json()
-        .then(
-            (json) => findReservations(json)
-        )
-    )
-}
-
 let findChargers = (chargers) => { 
     let chargerList = [];
 
@@ -203,18 +193,49 @@ let fetchInfo = () => {
     )
 }
 
+let findReservations = (reservations) => { 
+    for (let i of reservations) { 
+        resList.push(i);
+    }
+}
+
+let fetchReservations = () => { 
+    fetch('/reservations')
+    .then(
+        (response) => response.json()
+        .then(
+            (json) => findReservations(json)
+        )
+    )
+}
+
+let setTripId = (tripid) => { 
+    currentTrip = tripid.tripid;
+
+}
+
+let fetchTripId = () => { 
+    fetch('/getTripId')
+    .then(
+        (response) => response.json()
+        .then(
+            (json) => setTripId(json)
+        )
+    )
+} 
+
 window.addEventListener('DOMContentLoaded', (event) => { 
     
-    currentPin = localStorage.getItem('currentPin');
+    currentPin = sessionStorage.getItem('currentPin');
 
-    if (localStorage.getItem('state') == 'false') { 
+    if (sessionStorage.getItem('state') == 'false') { 
         state = false; 
-        currentDate = localStorage.getItem('date');
-        currentTime = localStorage.getItem('time');
-        duration = localStorage.getItem('duration');
+        currentDate = sessionStorage.getItem('date');
+        currentTime = sessionStorage.getItem('time');
+        duration = sessionStorage.getItem('duration');
     }
     
+    fetchTripId();
     fetchReservations();
     fetchInfo();
-    fetchChargers();
 });

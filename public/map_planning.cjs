@@ -1,9 +1,9 @@
 let map;
 let pinlist = [];
-let modal = document.querySelector('.modal-container');
+let currentResList = [];
+let modal = document.querySelector('.res-modal-container');
 
 let currentLocation;
-//when state is false that means there's an active pin for reservation search on map
 let state = true;
 let timevar; 
 let datevar; 
@@ -22,22 +22,22 @@ let pinIcon = L.icon({
 
 //Info functions
 /**
- * Sets localStorage values to store current pin for reservation in trip 
+ * Sets sessionStorage values to store current pin for reservation in trip 
  * Called by makeMap once popup is filled
  * Calls makeNewWaypoint
  */
 let proceedWithInfo = () => { 
 
     datevar = document.getElementById("date").value;
-    localStorage.setItem('date', datevar);
+    sessionStorage.setItem('date', datevar);
     timevar = document.getElementById("time").value;
-    localStorage.setItem('time', timevar);
+    sessionStorage.setItem('time', timevar);
     durvar = document.getElementById("duration").value;
-    localStorage.setItem('duration', durvar);
+    sessionStorage.setItem('duration', durvar);
     modal.style.zIndex = -1;
     modal.style.display = 'none';
     state = false;
-    localStorage.setItem('state', state);
+    sessionStorage.setItem('state', state);
     makeNewWaypoint(currentLocation);
 
 }
@@ -88,7 +88,7 @@ let findPins = (coordinates) => {
             let marker = createPin(latLng);
             marker.on('click', function() { 
                 let spotid = i.spotid;
-                localStorage.setItem('currentPin', spotid);
+                sessionStorage.setItem('currentPin', spotid);
                 window.location = "/pin_planning";
             });
             validpins.push(marker);
@@ -106,10 +106,21 @@ let findPins = (coordinates) => {
 let makeNewWaypoint = (coordinates) => { 
 
     let waypointMarker = L.marker(coordinates, {icon: pinIcon}).addTo(map);
+
+    let changeButton = L.DomUtil.create('div');
+    L.DomUtil.addClass(changeButton, 'waypoint-button');
+    let change = createButton('Change location', changeButton);
+    //waypointMarker.bindPopup(change);
+
     let cancelButton = L.DomUtil.create('div');
     L.DomUtil.addClass(cancelButton, 'waypoint-button');
     let cancelation = createButton('Cancel location', cancelButton);
-    waypointMarker.bindPopup(cancelation);
+    //waypointMarker.bindPopup(change);
+
+    let buttons = L.DomUtil.create('div');
+    buttons.appendChild(cancelation);
+    buttons.appendChild(change);
+    waypointMarker.bindPopup(buttons);
 
     let circle = L.circle(coordinates, {
         color: '#2E3B51',
@@ -126,15 +137,15 @@ let makeNewWaypoint = (coordinates) => {
         map.removeLayer(circle);
         map.removeLayer(pinsLayer);
 
-        localStorage.removeItem('currentLocation');
+        sessionStorage.removeItem('currentLocation');
         currentLocation = undefined;
-        localStorage.removeItem('state');
+        sessionStorage.removeItem('state');
         state = true;
-        localStorage.removeItem('time');
+        sessionStorage.removeItem('time');
         timevar = undefined;
-        localStorage.removeItem('date');
+        sessionStorage.removeItem('date');
         datevar = undefined;
-        localStorage.removeItem('duration');
+        sessionStorage.removeItem('duration');
         durvar = undefined;
     });
 
@@ -167,9 +178,22 @@ let makeMap = (position) => {
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
     
-    if (localStorage.getItem('state') == 'false') { 
+    let resMarkers = [];
+    for (let i of currentResList) { 
+        for (j of pinlist) { 
+            if (j.spotid == i) { 
+                let latLng = L.latLng(j.spcoordinates.x, j.spcoordinates.y);
+                let marker = createPin(latLng);
+                resMarkers.push(marker);
+            }
+        }
+    }
+
+    L.layerGroup(resMarkers).addTo(map);
+
+    if (sessionStorage.getItem('state') == 'false') { 
         state = false;
-        let coordinates = localStorage.getItem('currentLocation');
+        let coordinates = sessionStorage.getItem('currentLocation');
         coordinates = coordinates.split(", "); 
         let lat = coordinates[0].split("(");
         coordinates[0] = parseFloat(lat[1]); 
@@ -186,17 +210,18 @@ let makeMap = (position) => {
             let waypoint = createButton('Trip location', waypointButton);
             L.popup().setContent(waypoint).setLatLng(e.latlng).openOn(map);
             
+            
             L.DomEvent.on(waypoint, 'click', function() { 
                 currentLocation = e.latlng;
-                localStorage.setItem('currentLocation', currentLocation);
+                sessionStorage.setItem('currentLocation', currentLocation);
                 map.closePopup();
-
+                
                 modal.style.display = 'block';
                 modal.style.zIndex = 1050;
 
                 let button = document.querySelector(".submit");
                 button.addEventListener('click', proceedWithInfo);
-                let cancelButton = document.querySelector(".close");
+                let cancelButton = document.querySelector(".res-close");
                 cancelButton.addEventListener('click', cancel);
 
             });
@@ -236,6 +261,34 @@ let fetchPins = () => {
 }
 
 /**
+ * Creates array of pins of current trip 
+ * Called by fetchReservations in the beginning 
+ */
+let createResList = (reservations) => { 
+
+    for (let i of reservations) { 
+        currentResList.push(i.resspotid);
+    }
+
+}
+
+/**
+ * Uses fetch-api to get current trip's reservations
+ * Called when content loads
+ * Calls createResList
+ */
+let fetchReservations = () => { 
+
+    fetch('/currentReservations')
+    .then( 
+        (response) => response.json()
+        .then( 
+            (json) => createResList(json)
+        )
+    )
+}
+
+/**
  * Uses fetch-api to get current position on map and create tile
  * Called when content loads
  * Calls makeMap
@@ -252,6 +305,7 @@ let fetchPosition = () => {
 
 window.addEventListener('DOMContentLoaded', (event) => { 
     
+    fetchReservations();
     fetchPins();
 
 });

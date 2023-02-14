@@ -1,41 +1,78 @@
 let currentPin;
+let currentDate; 
+let currentTime; 
+let duration;
 let chargerAvailability = false;
 let resList = [];
 
 //Reservation button functions
+let redirect = (check) => { 
+    if (check) { 
+        window.location = '/';
+    }
+
+}
+
 let makeReservation = (evt) => { 
 
-    //here bring up the form to get info then submit to post
-    /*const body = { 
+    currentDate = sessionStorage.getItem('date');
+    currentTime = sessionStorage.getItem('time');
+    duration = sessionStorage.getItem('duration'); 
+
+    const body = { 
         date: currentDate, 
         starttime: currentTime, 
-        enttime: duration, 
+        endtime: duration, 
         userid: 1, 
         chargerid: evt.currentTarget.chargerid,
-        spotid: evt.currentTarget.chspotid
-    }*/
-    
-    /*fetch('/makeReservation', { 
-        method: "post",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" }
-    })
-    .then(res => res.json())
-    .then(json => console.log(json))
-    .catch(err => console.log(err))*/
+        spotid: Number(currentPin),
+        tripid: null
+    }
 
-    alert (evt.currentTarget.chargerid);
+    //do a fetch post request here to make reservation
+    fetch('/makeReservation', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    })
+    .then(
+        (response) => response.json()
+        .then(
+            (json) => redirect(json)
+        )
+    )
 
 }
 
 //Info functions
 let setAvailability = (i, text) => { 
     
-    text.innerHTML = 'Unavailable';
-    chargerAvailability = false;
-    if (i.chavailability) { 
-        text.innerHTML = 'Available';
-        chargerAvailability = true;
+    text.innerHTML = 'Available';
+    chargerAvailability = true;
+
+    for (let j of resList) { 
+        if (i.chargerid == j.reschargerid & i.chspotid == j.resspotid) { 
+            if (j.resdate == currentDate) { 
+
+                let givenstartTime = currentTime + ":00";
+                givenstartTime = new Date(currentDate + "T" + givenstartTime);
+                
+                let givenendTime = duration + ":00";
+                givenendTime = new Date(currentDate + "T" + givenendTime);
+                
+                let resstartTime = j.resstarttime + ":00";
+                resstartTime = new Date(currentDate + "T" + resstartTime);
+
+                let resendTime = j.resendtime + ":00";
+                resendTime  = new Date(currentDate + "T" + resendTime );
+
+                if ((resstartTime.getTime() < givenstartTime.getTime() & givenstartTime.getTime() < resendTime.getTime()) ||
+                (resstartTime.getTime() < givenendTime.getTime() & givenendTime.getTime() < resendTime.getTime())) { 
+                    text.innerHTML = 'Unavailable';
+                    chargerAvailability = false;
+                }
+            }
+        }
     }
     
 }
@@ -165,7 +202,7 @@ let fetchInfo = () => {
 
 window.addEventListener('DOMContentLoaded', (event) => { 
     
-    currentPin = localStorage.getItem('currentPin');
+    currentPin = sessionStorage.getItem('currentPin');
     
     fetchReservations();
     fetchInfo();

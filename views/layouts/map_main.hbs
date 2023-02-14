@@ -60,10 +60,9 @@
 
     <script>
         document.getElementById("back").onclick = function() {
-            console.log('clicked');
-            if(window.location.pathname == "/map_planning" & localStorage.getItem('state') == 'false') { 
+            if(window.location.pathname == "/map_planning" & sessionStorage.getItem('state') == 'false') { 
 
-                let modal = document.querySelector('.modal-container-confirmation');
+                let modal = document.querySelector('.confirm-modal-container');
                 let confirm = document.querySelector('.confirm'); 
                 let cancel = document.querySelector('.cancel'); 
                 
@@ -71,11 +70,17 @@
                 modal.style.zIndex= 1050; 
 
                 confirm.onclick = function() { 
-                    localStorage.removeItem('state');
-                    localStorage.removeItem('currentLocation');
-                    localStorage.removeItem('time');
-                    localStorage.removeItem('date');
-                    window.location = "/";
+                    sessionStorage.removeItem('state');
+                    sessionStorage.removeItem('currentLocation');
+                    sessionStorage.removeItem('time');
+                    sessionStorage.removeItem('date');
+                    
+                    fetch('/unsetTrip')
+                    .then( 
+                        (response) => { 
+                            window.location = '/';
+                        }
+                    )
                 }
                 
                 cancel.onclick = function() { 
@@ -85,10 +90,20 @@
                 
             }
             else { 
-                window.location.pathname = "/";
+                sessionStorage.removeItem('state');
+                sessionStorage.removeItem('currentLocation');
+                sessionStorage.removeItem('time');
+                sessionStorage.removeItem('date');
+                
+                fetch('/unsetTrip')
+                .then( 
+                    (response) => { 
+                        window.location = '/';
+                    }
+                )
             }
         }
     </script>
-    
+
 </body> 
 
