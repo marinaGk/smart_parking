@@ -10,9 +10,20 @@ let datevar;
 let durvar;
 
 /**
- * 
+ * Current waypoint icon
  */
 let waypointIcon = L.icon({ 
+
+    //icon content is 15x21 which determines the anchor
+    iconUrl: 'imgs/waypointPin.png', 
+    iconAnchor: [12.5, 23]
+
+});
+
+/**
+ * Trip location icon
+ */
+let tripIcon = L.icon({ 
 
     //icon content is 15x21 which determines the anchor
     iconUrl: 'imgs/tripPin.png', 
@@ -92,6 +103,11 @@ let getDistance = (from, to) => {
     return distance;
 }
 
+let createTripPin = (spot) => { 
+    let spotMarker = L.marker(spot, {icon: tripIcon});
+    return spotMarker;
+}
+
 /**
  * Creates markers for spots within radius of waypoint 
  * Called by findPins
@@ -135,7 +151,7 @@ let findPins = (coordinates) => {
  */
 let makeNewWaypoint = (coordinates) => { 
 
-    let waypointMarker = L.marker(coordinates, {icon: pinIcon}).addTo(map);
+    let waypointMarker = L.marker(coordinates, {icon: waypointIcon}).addTo(map);
 
     let changeButton = L.DomUtil.create('div');
     L.DomUtil.addClass(changeButton, 'waypoint-button');
@@ -224,7 +240,7 @@ let makeMap = (position) => {
         for (j of pinlist) { 
             if (j.spotid == i) { 
                 let latLng = L.latLng(j.spcoordinates.x, j.spcoordinates.y);
-                let marker = createPin(latLng);
+                let marker = createTripPin(latLng);
                 resMarkers.push(marker);
             }
         }
