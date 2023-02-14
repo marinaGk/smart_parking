@@ -42,55 +42,69 @@ let makeReservation = (evt) => {
 
 let setAvailability = (i, text) => { 
 
-    text.innerHTML = 'Available';
-    chargerAvailability = true;
-
-    for (let j of resList) { 
-        if (i.chargerid == j.reschargerid & i.chspotid == j.resspotid) { 
-            if (j.resdate == currentDate) { 
-
-                let givenstartTime = currentTime + ":00";
-                givenstartTime = new Date(currentDate + "T" + givenstartTime);
-                givenstartTime = givenstartTime.getTime();
-                onehourInterval = givenstartTime + 3600000;
-                
-                let givenendTime = duration + ":00";
-                givenendTime = new Date(currentDate + "T" + givenendTime);
-                givenendTime = givenendTime.getTime();
-
-                let resstartTime = j.resstarttime + ":00";
-                resstartTime = new Date(currentDate + "T" + resstartTime);
-                resstartTime = resstartTime.getTime();
-
-                let resendTime = j.resendtime + ":00";
-                resendTime  = new Date(currentDate + "T" + resendTime );
-                resendTime = resendTime.getTime();
-
-                if (resstartTime < givenstartTime & givenstartTime < resendTime) { 
-                    text.innerHTML = 'Unavailable';
-                    chargerAvailability = false;
+    if (i.chavailability == false) { 
+        text.innerHTML = 'Unavailable';
+        chargerAvailability = false;
+    }
+    else { 
+        text.innerHTML = 'Available';
+        chargerAvailability = true;
+    
+        for (let j of resList) { 
+            if (i.chargerid == j.reschargerid & i.chspotid == j.resspotid) { 
+                if (j.resdate == currentDate) { 
+    
+                    let givenstartTime = currentTime + ":00";
+                    givenstartTime = new Date(currentDate + "T" + givenstartTime);
+                    givenstartTime = givenstartTime.getTime();
+                    onehourInterval = givenstartTime + 3600000;
+                    
+                    let givenendTime = duration + ":00";
+                    givenendTime = new Date(currentDate + "T" + givenendTime);
+                    givenendTime = givenendTime.getTime();
+    
+                    let resstartTime = j.resstarttime + ":00";
+                    resstartTime = new Date(currentDate + "T" + resstartTime);
+                    resstartTime = resstartTime.getTime();
+    
+                    let resendTime = j.resendtime + ":00";
+                    resendTime  = new Date(currentDate + "T" + resendTime );
+                    resendTime = resendTime.getTime();
+    
+                    if (givenstartTime < resstartTime & resstartTime < onehourInterval) { 
+                        text.innerHTML = 'Unavailable';
+                        chargerAvailability = false;
+                        break; 
+                    }
+                    else if (givenstartTime < resendTime & resendTime < onehourInterval) { 
+                        text.innerHTML = 'Unavailable';
+                        chargerAvailability = false;
+                        break; 
+                    }
+                    else if (resstartTime < givenstartTime & givenendTime < onehourInterval) { 
+                        text.innerHTML = 'Unavailable';
+                        chargerAvailability = false;
+                        break;
+                    }
+                    else { 
+                        if (onehourInterval < resstartTime & resstartTime < givenendTime) { 
+                            text.innerHTML = 'Unavailable';
+                            chargerAvailability = false;
+                            break;
+                        }
+                        else if (onehourInterval < resendTime & resendTime < givenendTime) { 
+                            text.innerHTML = 'Unavailable';
+                            chargerAvailability = false;
+                            break;
+                        }
+                    }
+    
                 }
-                else if (resstartTime < onehourInterval & onehourInterval < resendTime) { 
-                    text.innerHTML = 'Unavailable';
-                    chargerAvailability = false;
-                }
-                else if (givenstartTime < resstartTime & resstartTime < onehourInterval) { 
-                    text.innerHTML = 'Unavailable';
-                    chargerAvailability = false;
-                }
-                else if (givenstartTime < resendTime & resendTime < onehourInterval) { 
-                    text.innerHTML = 'Unavailable';
-                    chargerAvailability = false;
-                }
-                else if (resstartTime < givenendTime & givenendTime < resendTime) { 
-                    text.innerHTML = 'Unavailable';
-                    chargerAvailability = false;
-                }
-
             }
         }
+    
     }
-
+ 
 }
 
 let setChargers = (i) => { 

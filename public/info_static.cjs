@@ -59,22 +59,35 @@ let setAvailability = (i, text) => {
 
                 let givenstartTime = currentTime + ":00";
                 givenstartTime = new Date(currentDate + "T" + givenstartTime);
+                givenstartTime = givenstartTime.getTime();
                 
                 let givenendTime = duration + ":00";
                 givenendTime = new Date(currentDate + "T" + givenendTime);
+                givenendTime = givenendTime.getTime();
                 
                 let resstartTime = j.resstarttime + ":00";
                 resstartTime = new Date(currentDate + "T" + resstartTime);
+                resstartTime = resstartTime.getTime();
 
                 let resendTime = j.resendtime + ":00";
-                resendTime  = new Date(currentDate + "T" + resendTime );
+                resendTime  = new Date(currentDate + "T" + resendTime);
+                resendTime = resendTime.getTime();
 
-                if ((resstartTime.getTime() < givenstartTime.getTime() & givenstartTime.getTime() < resendTime.getTime()) ||
-                (resstartTime.getTime() < givenendTime.getTime() & givenendTime.getTime() < resendTime.getTime())) { 
+                if (givenstartTime < resstartTime & resstartTime < givenendTime) { 
                     text.innerHTML = 'Unavailable';
                     chargerAvailability = false;
+                    break;
                 }
-                
+                else if (givenstartTime < resendTime & resendTime < givenendTime) { 
+                    text.innerHTML = 'Unavailable';
+                    chargerAvailability = false;
+                    break;
+                }
+                else if (resstartTime < givenstartTime & givenendTime < resendTime) { 
+                    text.innerHTML = 'Unavailable';
+                    chargerAvailability = false;
+                    break;
+                }
             }
         }
     }
