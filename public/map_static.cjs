@@ -18,9 +18,9 @@ let pinIcon = L.icon({
 });
 
 /**
- * Sets sessionStorage values to store current pin for reservation in trip 
- * Called by makeMap once popup is filled
- * Calls makeNewWaypoint
+ * Sets sessionStorage values to store current pin for reservation
+ * Called by openModal
+ * Moves to pin info window
  */
 let proceedWithInfo = () => { 
 
@@ -37,7 +37,7 @@ let proceedWithInfo = () => {
 }
 
 /**
- * Cancels current pin for reservation in trip and closes popup
+ * Cancels current pin for reservation and closes popup
  * Called by openModal to cloce popup
  */
 let cancel = () => { 

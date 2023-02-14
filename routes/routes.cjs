@@ -14,7 +14,7 @@ router.route('/map_static').get((req, res) => {
 });
 
 router.route('/map_location').get((req, res) => { 
-    res.render('map_location', {layout: 'map_main.hbs', title: "CHARGE UP"})
+    res.render('map_location', {layout: 'map_main.hbs', styles: 'map_location.css', title: "CHARGE UP"})
 });
 
 router.route('/map_planning').get((req, res) => { 
@@ -27,7 +27,11 @@ router.route('/map_planning').get((req, res) => {
 });
 
 router.route('/pin_static').get((req, res) => { 
-    res.render('info_static', {layout: 'info_main.hbs', style: 'info_page.css', title: "CHARGE UP"})
+    res.render('info_static', {layout: 'info_main.hbs', title: "CHARGE UP"})
+});
+
+router.route('/pin_location').get((req, res) => { 
+    res.render('info_location', {layout: 'info_main.hbs', title: "CHARGE UP"})
 });
 
 router.route('/pin_planning').get((req, res) => { 

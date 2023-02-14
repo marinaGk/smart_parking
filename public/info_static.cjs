@@ -8,6 +8,9 @@ let resList = [];
 //Reservation button functions
 let redirect = (check) => { 
     if (check) { 
+        sessionStorage.removeItem('date');
+        sessionStorage.removeItem('time');
+        sessionStorage.removeItem('duration');
         window.location = '/';
     }
 
@@ -71,6 +74,7 @@ let setAvailability = (i, text) => {
                     text.innerHTML = 'Unavailable';
                     chargerAvailability = false;
                 }
+                
             }
         }
     }
@@ -162,8 +166,7 @@ let findChargers = (chargers) => {
     for (let i of chargers) {
         if (i.chspotid == currentPin) { 
             chargerList.push(i);
-        }
-        
+        }  
     }
     for (let i of chargerList) { 
         setChargers(i);

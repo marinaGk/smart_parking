@@ -1,6 +1,7 @@
 let marker; 
 let circle;
 let pinlist = [];
+let modal = document.querySelector('.res-modal-container');
 let counter = 0;
 let timeout = 3000;
 
@@ -31,6 +32,45 @@ let positionIcon = L.icon({
     iconUrl: 'imgs/location.png', 
     iconAnchor:   [11, 7]
 });
+
+/**
+ * Sets sessionStorage values to store current pin for reservation in trip 
+ * Called by makeMap once popup is filled
+ * Calls makeNewWaypoint
+ */
+let proceedWithInfo = () => { 
+
+    durvar = document.getElementById("duration").value;
+    sessionStorage.setItem('duration', durvar);
+    modal.style.zIndex = -1;
+    modal.style.display = 'none';
+    window.location = '/pin_location';
+
+}
+
+/**
+ * Cancels current pin for reservation and closes popup
+ * Called by openModal to cloce popup
+ */
+let cancel = () => { 
+    modal.style.zIndex = -1;
+    modal.style.display = 'none';
+}
+
+/**
+ * Opens modal for reservation details 
+ * Called by findPins
+ */
+let openModal = () => { 
+    modal.style.display = 'block';
+    modal.style.zIndex = 1050;
+
+    let button = document.querySelector(".submit");
+    button.addEventListener('click', proceedWithInfo);
+    let cancelButton = document.querySelector(".res-close");
+    cancelButton.addEventListener('click', cancel);
+
+}
 
 /**
  * Creates markers for spots within radius of waypoint 
@@ -68,7 +108,7 @@ let findPins = (coordinates) => {
             marker.on('click', function() { 
                 let spotid = i.spotid;
                 sessionStorage.setItem('currentPin', spotid);
-                window.location = "/pin_static";
+                openModal();
             });
             validpins.push(marker);
         }
