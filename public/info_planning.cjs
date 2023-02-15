@@ -48,51 +48,43 @@ let makeReservation = (evt) => {
 //Info functions
 let setAvailability = (i, text) => { 
     
-    if (state == true) { 
-        text.innerHTML = 'Unavailable';
-        if (i.chavailability) { 
-            text.innerHTML = 'Available';
-        }
-    }
-    else { 
-        text.innerHTML = 'Available';
-        chargerAvailability = true;
+    text.innerHTML = 'Available';
+    chargerAvailability = true;
 
-        for (let j of resList) { 
-            if (i.chargerid == j.reschargerid & i.chspotid == j.resspotid) { 
-                if (j.resdate == currentDate) { 
+    for (let j of resList) { 
+        if (i.chargerid == j.reschargerid & i.chspotid == j.resspotid) { 
+            if (j.resdate == currentDate) { 
 
-                    let givenstartTime = currentTime + ":00";
-                    givenstartTime = new Date(currentDate + "T" + givenstartTime);
-                    givenstartTime = givenstartTime.getTime();
-                    
-                    let givenendTime = duration + ":00";
-                    givenendTime = new Date(currentDate + "T" + givenendTime);
-                    givenendTime = givenendTime.getTime();
-                    
-                    let resstartTime = j.resstarttime + ":00";
-                    resstartTime = new Date(currentDate + "T" + resstartTime);
-                    resstartTime = resstartTime.getTime();
+                let givenstartTime = currentTime + ":00";
+                givenstartTime = new Date(currentDate + "T" + givenstartTime);
+                givenstartTime = givenstartTime.getTime();
+                
+                let givenendTime = duration + ":00";
+                givenendTime = new Date(currentDate + "T" + givenendTime);
+                givenendTime = givenendTime.getTime();
+                
+                let resstartTime = j.resstarttime + ":00";
+                resstartTime = new Date(currentDate + "T" + resstartTime);
+                resstartTime = resstartTime.getTime();
 
-                    let resendTime = j.resendtime + ":00";
-                    resendTime  = new Date(currentDate + "T" + resendTime);
-                    resendTime = resendTime.getTime();
+                let resendTime = j.resendtime + ":00";
+                resendTime  = new Date(currentDate + "T" + resendTime);
+                resendTime = resendTime.getTime();
 
-                    if (givenstartTime <= resstartTime & resstartTime <= givenendTime) { 
-                        text.innerHTML = 'Unavailable';
-                        chargerAvailability = false;
-                        break;
-                    }
-                    else if (givenstartTime <= resendTime & resendTime <= givenendTime) { 
-                        text.innerHTML = 'Unavailable';
-                        chargerAvailability = false;
-                        break;
-                    }
-                    else if (resstartTime <= givenstartTime & givenendTime <= resendTime) { 
-                        text.innerHTML = 'Unavailable';
-                        chargerAvailability = false;
-                        break;
-                    }
+                if (givenstartTime <= resstartTime & resstartTime <= givenendTime) { 
+                    text.innerHTML = 'Unavailable';
+                    chargerAvailability = false;
+                    break;
+                }
+                else if (givenstartTime <= resendTime & resendTime <= givenendTime) { 
+                    text.innerHTML = 'Unavailable';
+                    chargerAvailability = false;
+                    break;
+                }
+                else if (resstartTime <= givenstartTime & givenendTime <= resendTime) { 
+                    text.innerHTML = 'Unavailable';
+                    chargerAvailability = false;
+                    break;
                 }
             }
         }
@@ -260,7 +252,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         currentTime = sessionStorage.getItem('time');
         duration = sessionStorage.getItem('duration');
     }
-    
+
     fetchTripId();
 
 });
