@@ -181,6 +181,14 @@ img {
     color: #92CF93;
 }
 
+#available p{ 
+    color: #92CF93;
+}
+
+#unavailable p{ 
+    color: rgb(189, 134, 134);
+}
+
 .buttons { 
     position: absolute;
     bottom: 0;
@@ -204,4 +212,7 @@ img {
     color: white;
 }
 
+#no-button { 
+    background-color: #9ba59c;
+}
 

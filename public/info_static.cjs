@@ -18,10 +18,6 @@ let redirect = (check) => {
 
 let makeReservation = (evt) => { 
 
-    currentDate = sessionStorage.getItem('date');
-    currentTime = sessionStorage.getItem('time');
-    duration = sessionStorage.getItem('duration'); 
-
     const body = { 
         date: currentDate, 
         starttime: currentTime, 
@@ -56,7 +52,7 @@ let setAvailability = (i, text) => {
     for (let j of resList) { 
         if (i.chargerid == j.reschargerid & i.chspotid == j.resspotid) { 
             if (j.resdate == currentDate) { 
-
+                
                 let givenstartTime = currentTime + ":00";
                 givenstartTime = new Date(currentDate + "T" + givenstartTime);
                 givenstartTime = givenstartTime.getTime();
@@ -64,7 +60,7 @@ let setAvailability = (i, text) => {
                 let givenendTime = duration + ":00";
                 givenendTime = new Date(currentDate + "T" + givenendTime);
                 givenendTime = givenendTime.getTime();
-                
+
                 let resstartTime = j.resstarttime + ":00";
                 resstartTime = new Date(currentDate + "T" + resstartTime);
                 resstartTime = resstartTime.getTime();
@@ -73,17 +69,17 @@ let setAvailability = (i, text) => {
                 resendTime  = new Date(currentDate + "T" + resendTime);
                 resendTime = resendTime.getTime();
 
-                if (givenstartTime < resstartTime & resstartTime < givenendTime) { 
+                if (givenstartTime <= resstartTime & resstartTime <= givenendTime) { 
                     text.innerHTML = 'Unavailable';
                     chargerAvailability = false;
                     break;
                 }
-                else if (givenstartTime < resendTime & resendTime < givenendTime) { 
+                else if (givenstartTime <= resendTime & resendTime <= givenendTime) { 
                     text.innerHTML = 'Unavailable';
                     chargerAvailability = false;
                     break;
                 }
-                else if (resstartTime < givenstartTime & givenendTime < resendTime) { 
+                else if (resstartTime <= givenstartTime & givenendTime <= resendTime) { 
                     text.innerHTML = 'Unavailable';
                     chargerAvailability = false;
                     break;
@@ -91,6 +87,8 @@ let setAvailability = (i, text) => {
             }
         }
     }
+
+    return chargerAvailability;
     
 }
 
@@ -113,8 +111,14 @@ let setChargers = (i) => {
     let availability = document.createElement('span');
     availability.className = "availability";
     text = document.createElement('p');
-    setAvailability(i, text);
+    let current = setAvailability(i, text);
     availability.appendChild(text);
+    if (current) { 
+        availability.id = 'available';
+    }
+    else { 
+        availability.id = 'unavailable';
+    }
     info.appendChild(availability);
 
     let buttons = document.createElement('div');
@@ -129,6 +133,9 @@ let setChargers = (i) => {
 
     let res = document.createElement('span');
     res.className = "res_button";
+    if (!current) { 
+        res.id = "no-button";
+    }
     text = document.createElement('p');
     text.innerHTML = "Charge";
     res.appendChild(text);
@@ -161,6 +168,7 @@ let findReservations = (reservations) => {
     for (let i of reservations) { 
         resList.push(i);
     }
+    fetchInfo();
 }
 
 let fetchReservations = () => { 
@@ -185,6 +193,7 @@ let findChargers = (chargers) => {
         setChargers(i);
     }
     
+
 }
 
 let fetchChargers = () => { 
@@ -204,6 +213,7 @@ let findPin = (pins) => {
             break;
         }
     }
+    fetchChargers();
 }
 
 let fetchInfo = () => { 
@@ -219,9 +229,10 @@ let fetchInfo = () => {
 window.addEventListener('DOMContentLoaded', (event) => { 
     
     currentPin = sessionStorage.getItem('currentPin');
-    
+    currentDate = sessionStorage.getItem('date');
+    currentTime = sessionStorage.getItem('time');
+    duration = sessionStorage.getItem('duration'); 
+
     fetchReservations();
-    fetchInfo();
-    fetchChargers();
 
 });

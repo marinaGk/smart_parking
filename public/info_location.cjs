@@ -71,28 +71,28 @@ let setAvailability = (i, text) => {
                     resendTime  = new Date(currentDate + "T" + resendTime );
                     resendTime = resendTime.getTime();
     
-                    if (givenstartTime < resstartTime & resstartTime < onehourInterval) { 
+                    if (givenstartTime <= resstartTime & resstartTime <= onehourInterval) { 
                         text.innerHTML = 'Unavailable';
                         chargerAvailability = false;
                         break; 
                     }
-                    else if (givenstartTime < resendTime & resendTime < onehourInterval) { 
+                    else if (givenstartTime <= resendTime & resendTime <= onehourInterval) { 
                         text.innerHTML = 'Unavailable';
                         chargerAvailability = false;
                         break; 
                     }
-                    else if (resstartTime < givenstartTime & givenendTime < onehourInterval) { 
+                    else if (resstartTime <= givenstartTime & givenendTime <= onehourInterval) { 
                         text.innerHTML = 'Unavailable';
                         chargerAvailability = false;
                         break;
                     }
                     else { 
-                        if (onehourInterval < resstartTime & resstartTime < givenendTime) { 
+                        if (onehourInterval <= resstartTime & resstartTime <= givenendTime) { 
                             text.innerHTML = 'Unavailable';
                             chargerAvailability = false;
                             break;
                         }
-                        else if (onehourInterval < resendTime & resendTime < givenendTime) { 
+                        else if (onehourInterval <= resendTime & resendTime <= givenendTime) { 
                             text.innerHTML = 'Unavailable';
                             chargerAvailability = false;
                             break;
@@ -104,6 +104,7 @@ let setAvailability = (i, text) => {
         }
     
     }
+    return chargerAvailability;
  
 }
 
@@ -126,7 +127,13 @@ let setChargers = (i) => {
     let availability = document.createElement('span');
     availability.className = "availability";
     text = document.createElement('p');
-    setAvailability(i, text);
+    let current = setAvailability(i, text);
+    if (current) { 
+        availability.id = 'available';
+    }
+    else { 
+        availability.id = 'unavailable';
+    }
     availability.appendChild(text);
     info.appendChild(availability);
 
@@ -142,6 +149,9 @@ let setChargers = (i) => {
 
     let res = document.createElement('span');
     res.className = "res_button";
+    if (!current) { 
+        res.id = "no-button";
+    }
     text = document.createElement('p');
     text.innerHTML = "Charge";
     res.appendChild(text);
@@ -174,6 +184,7 @@ let findReservations = (reservations) => {
     for (let i of reservations) { 
         resList.push(i);
     }
+    fetchInfo();
 }
 
 let fetchReservations = () => { 
@@ -217,6 +228,7 @@ let findPin = (pins) => {
             break;
         }
     }
+    fetchChargers();
 }
 
 let fetchInfo = () => { 
@@ -259,7 +271,5 @@ window.addEventListener('DOMContentLoaded', (event) => {
     currentTime = hours + ":" + mins;
 
     fetchReservations();
-    fetchInfo();
-    fetchChargers();
 
 });

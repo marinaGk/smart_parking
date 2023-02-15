@@ -78,17 +78,17 @@ let setAvailability = (i, text) => {
                     resendTime  = new Date(currentDate + "T" + resendTime);
                     resendTime = resendTime.getTime();
 
-                    if (givenstartTime < resstartTime & resstartTime < givenendTime) { 
+                    if (givenstartTime <= resstartTime & resstartTime <= givenendTime) { 
                         text.innerHTML = 'Unavailable';
                         chargerAvailability = false;
                         break;
                     }
-                    else if (givenstartTime < resendTime & resendTime < givenendTime) { 
+                    else if (givenstartTime <= resendTime & resendTime <= givenendTime) { 
                         text.innerHTML = 'Unavailable';
                         chargerAvailability = false;
                         break;
                     }
-                    else if (resstartTime < givenstartTime & givenendTime < resendTime) { 
+                    else if (resstartTime <= givenstartTime & givenendTime <= resendTime) { 
                         text.innerHTML = 'Unavailable';
                         chargerAvailability = false;
                         break;
@@ -97,6 +97,8 @@ let setAvailability = (i, text) => {
             }
         }
     }
+
+    return chargerAvailability;
 
 }
 
@@ -119,7 +121,13 @@ let setChargers = (i) => {
     let availability = document.createElement('span');
     availability.className = "availability";
     text = document.createElement('p');
-    setAvailability(i, text);
+    let current = setAvailability(i, text);
+    if (current) { 
+        availability.id = 'available';
+    }
+    else { 
+        availability.id = 'unavailable';
+    }
     availability.appendChild(text);
     info.appendChild(availability);
 
@@ -135,6 +143,9 @@ let setChargers = (i) => {
 
     let res = document.createElement('span');
     res.className = "res_button";
+    if (!current) { 
+        res.id = "no-button";
+    }
     text = document.createElement('p');
     text.innerHTML = "Charge";
     res.appendChild(text);
@@ -211,6 +222,7 @@ let findReservations = (reservations) => {
     for (let i of reservations) { 
         resList.push(i);
     }
+    fetchInfo();
 }
 
 let fetchReservations = () => { 
@@ -225,7 +237,7 @@ let fetchReservations = () => {
 
 let setTripId = (tripid) => { 
     currentTrip = tripid.tripid;
-
+    fetchReservations();
 }
 
 let fetchTripId = () => { 
@@ -250,6 +262,5 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
     
     fetchTripId();
-    fetchReservations();
-    fetchInfo();
+
 });
