@@ -29,7 +29,6 @@ CREATE TABLE CHARGER (
     ChargerID SERIAL NOT NULL UNIQUE, 
     ChAvailability BOOLEAN NOT NULL, 
     ChPower varchar(100) NOT NULL, 
-    ChType varchar(100) NOT NULL, 
     ChPrice varchar(100) NOT NULL,
     ChSpotID INTEGER NOT NULL, 
     FOREIGN KEY (ChSpotID) REFERENCES SPOT (SpotID), 
