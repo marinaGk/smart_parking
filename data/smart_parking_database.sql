@@ -67,6 +67,3 @@ CREATE TABLE RESERVATION (
     PRIMARY KEY(ReservationID)
 
 );
-
-/*insert into  reservation (resdate, resstarttime, resendtime, resuserid, reschargerid, resspotid)
-values ('2023-02-07', '12:12', '12:42', 1, 2, 1)*/

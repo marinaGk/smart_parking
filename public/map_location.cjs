@@ -216,11 +216,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
     fetchPins();
     fetchPosition();
     if (!navigator.geolocation) {
-        console.log("Your browser doesn't support geolocation feature!");
+        alert("Your browser doesn't support geolocation feature!");
     } else {
-        setInterval(() => {
+        /*setInterval(() => {
             navigator.geolocation.getCurrentPosition(setUserPosition, error, options);
-        }, timeout);
+        }, timeout);*/
+        navigator.geolocation.watchPosition(setUserPosition, error, options);
     }
 
 });
