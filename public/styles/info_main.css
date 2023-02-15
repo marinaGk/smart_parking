@@ -198,7 +198,16 @@ img {
     margin-bottom: 10%;
 }
 
-.buttons span{ 
+.price_button { 
+    width: 40%;
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+    /*border-radius: 10px;
+    background-color: #92CF93;*/
+}
+
+.res_button { 
     width: 40%;
     padding: 5px;
     align-items: center;
@@ -211,6 +220,10 @@ img {
     width: fit-content;
     margin: auto;
     color: white;
+}
+
+.price_button p { 
+    color: #2E3B51;
 }
 
 #no-button { 
