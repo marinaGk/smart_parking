@@ -1,6 +1,7 @@
 let map;
 let pinlist = [];
 let currentResList = [];
+let currentWaypoint;
 let modal = document.querySelector('.res-modal-container');
 
 let currentLocation;
@@ -239,9 +240,27 @@ let makeMap = (position) => {
     for (let i of currentResList) { 
         for (j of pinlist) { 
             if (j.spotid == i) { 
+                
                 let latLng = L.latLng(j.spcoordinates.x, j.spcoordinates.y);
+
+                if (currentWaypoint) { 
+                    console.log(currentWaypoint)
+                    L.Routing.control({
+                        waypoints: [
+                            currentWaypoint, 
+                            latLng
+                        ],
+                        routeWhileDragging: false,
+                        lineOptions : {
+                            addWaypoints: false
+                        }
+                    }).addTo(map);
+                }
+                
                 let marker = createTripPin(latLng);
                 resMarkers.push(marker);
+                currentWaypoint = latLng;
+
             }
         }
     }
@@ -326,6 +345,7 @@ let createResList = (reservations) => {
     for (let i of reservations) { 
         currentResList.push(i.resspotid);
     }
+    fetchPins();
 
 }
 
@@ -363,6 +383,5 @@ let fetchPosition = () => {
 window.addEventListener('DOMContentLoaded', (event) => { 
     
     fetchReservations();
-    fetchPins();
 
 });

@@ -22,6 +22,10 @@
     margin-top: 5px;
 }
 
+.leaflet-marker-icon.leaflet-zoom-animated.leaflet-interactive.leaflet-marker-draggable { 
+    display: none;
+}
+
 /*leave confirm container*/ 
 .confirm-modal-container { 
     display: none;
