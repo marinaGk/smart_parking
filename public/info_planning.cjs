@@ -129,7 +129,7 @@ let setChargers = (i) => {
     let price = document.createElement('span');
     price.className = 'price_button';
     text = document.createElement('p');
-    text.innerHTML = "Prices";
+    text.innerHTML = i.chprice;
     price.appendChild(text);
     buttons.appendChild(price);
 
