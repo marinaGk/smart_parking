@@ -1,0 +1,253 @@
+[
+    {
+        "id": "653333991d044ebe",
+        "type": "tab",
+        "label": "sql-video",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6235eb61ecc5a011",
+        "type": "debug",
+        "z": "653333991d044ebe",
+        "name": "debug 16",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "f34918b4125b44ae",
+        "type": "catch",
+        "z": "653333991d044ebe",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 900,
+        "y": 380,
+        "wires": [
+            [
+                "6235eb61ecc5a011"
+            ]
+        ]
+    },
+    {
+        "id": "2b4d05fcfa8906de",
+        "type": "postgrestor",
+        "z": "653333991d044ebe",
+        "name": "",
+        "query": "update charger \nset chavailability = '0'\nwhere chargerid = '1';",
+        "postgresDB": "27c50ea5c2100779",
+        "output": true,
+        "outputs": 1,
+        "x": 550,
+        "y": 380,
+        "wires": [
+            [
+                "6235eb61ecc5a011"
+            ]
+        ]
+    },
+    {
+        "id": "bd9eea226d3535b5",
+        "type": "postgrestor",
+        "z": "653333991d044ebe",
+        "name": "",
+        "query": "update charger \nset chavailability = '0'\nwhere chargerid = '15';",
+        "postgresDB": "27c50ea5c2100779",
+        "output": true,
+        "outputs": 1,
+        "x": 550,
+        "y": 320,
+        "wires": [
+            [
+                "25a75e4df261c5be"
+            ]
+        ]
+    },
+    {
+        "id": "36e92dad85913752",
+        "type": "postgrestor",
+        "z": "653333991d044ebe",
+        "name": "",
+        "query": "update charger \nset chavailability = '0'\nwhere chargerid = '3';",
+        "postgresDB": "27c50ea5c2100779",
+        "output": true,
+        "outputs": 1,
+        "x": 550,
+        "y": 260,
+        "wires": [
+            [
+                "cf7ba92bf182318e"
+            ]
+        ]
+    },
+    {
+        "id": "0f91b9217c904c27",
+        "type": "postgrestor",
+        "z": "653333991d044ebe",
+        "name": "",
+        "query": "update charger \nset chavailability = '0'\nwhere chargerid = '2';",
+        "postgresDB": "27c50ea5c2100779",
+        "output": true,
+        "outputs": 1,
+        "x": 550,
+        "y": 200,
+        "wires": [
+            [
+                "4fb6b01523be63db"
+            ]
+        ]
+    },
+    {
+        "id": "25a75e4df261c5be",
+        "type": "debug",
+        "z": "653333991d044ebe",
+        "name": "debug 17",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "cf7ba92bf182318e",
+        "type": "debug",
+        "z": "653333991d044ebe",
+        "name": "debug 18",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 742.2000122070312,
+        "y": 264.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "4fb6b01523be63db",
+        "type": "debug",
+        "z": "653333991d044ebe",
+        "name": "debug 19",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 744.2000122070312,
+        "y": 211.1999969482422,
+        "wires": []
+    },
+    {
+        "id": "cabfb5a1298ba8c7",
+        "type": "catch",
+        "z": "653333991d044ebe",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 900,
+        "y": 320,
+        "wires": [
+            [
+                "25a75e4df261c5be"
+            ]
+        ]
+    },
+    {
+        "id": "406ba067ea2a2bc6",
+        "type": "catch",
+        "z": "653333991d044ebe",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 900,
+        "y": 260,
+        "wires": [
+            [
+                "cf7ba92bf182318e"
+            ]
+        ]
+    },
+    {
+        "id": "733ad91c545bace4",
+        "type": "catch",
+        "z": "653333991d044ebe",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 900,
+        "y": 200,
+        "wires": [
+            [
+                "4fb6b01523be63db"
+            ]
+        ]
+    },
+    {
+        "id": "b14f11e2758ca270",
+        "type": "inject",
+        "z": "653333991d044ebe",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 330,
+        "y": 320,
+        "wires": [
+            [
+                "0f91b9217c904c27",
+                "36e92dad85913752",
+                "2b4d05fcfa8906de",
+                "bd9eea226d3535b5"
+            ]
+        ]
+    },
+    {
+        "id": "27c50ea5c2100779",
+        "type": "postgresDB",
+        "name": "team91@dpg-ce7r49un6mpksr8vqldg-a:5432/smart_parking_iot",
+        "host": "dpg-ce7r49un6mpksr8vqldg-a.frankfurt-postgres.render.com",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "smart_parking_iot",
+        "databaseFieldType": "str",
+        "ssl": "true",
+        "sslFieldType": "bool",
+        "max": "10",
+        "maxFieldType": "num",
+        "min": "1",
+        "minFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "team91",
+        "userFieldType": "str",
+        "password": "9rbyS3bc12cowHdAGWlBXEopSx2ov2wT",
+        "passwordFieldType": "str"
+    }
+]
